@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" , dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ title }}</title>
+    <!-- Bootstrap -->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='plugins/bootstrap5/bootstrap.min.css') }}"
+    />
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='plugins/fontawesome/css/fontawesome.min.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='plugins/fontawesome/css/brands.min.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='plugins/fontawesome/css/solid.min.css') }}"
+    />
+  </head>
+  <body>
+    {% include 'navbar.html' %}
+    <div class="container-fluid">
+      <main>
+        <!--Start Flash-->
+        {% with messages=get_flashed_messages(with_categories=true) %} {% if
+        messages %} {% for category, message in messages %}
+        <div class="row">
+          <div
+            class="alert alert-{{ category }} alert-dismissible fade show"
+            role="alert"
+          >
+            {{ message }}
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="alert"
+              aria-label="Close"
+            ></button>
+          </div>
+        </div>
+        {% endfor %} {% endif %} {% endwith %}
+        <!--End Flash-->
+        {% block content %} {% endblock content %}
+      </main>
+    </div>
+    <!-- Bootstrap -->
+    <script src="{{ url_for('static', filename='plugins/bootstrap5/bootstrap.bundle.js') }}"></script>
+  </body>
+</html>
