@@ -28,6 +28,30 @@ class LoginForm(FlaskForm):
                          render_kw={"class": "btn btn-primary"})
 
 
+class UserRegistrationForm(FlaskForm):
+    """
+    Form for users to register
+    """
+
+    email = StringField('Email', validators=[DataRequired(), Email()],
+                        render_kw={"class": "form-control"})
+    firstname = StringField('First Name', validators=[DataRequired()],
+                            render_kw={"class": "form-control"})
+    lastname = StringField('Last Name', validators=[DataRequired()],
+                           render_kw={"class": "form-control"})
+    department = SelectField('Department', choices=USER_DEPARTMENT_CHOICES,
+                             validators=[DataRequired()],
+                             render_kw={"class": "form-control select2"})
+    password = PasswordField('Password', validators=[DataRequired()],
+                             render_kw={"class": "form-control"})
+    confirm_password = PasswordField('Confirm Password',
+                                     validators=[DataRequired(),
+                                                 EqualTo('password')],
+                                     render_kw={"class": "form-control"})
+    submit = SubmitField('Save',
+                         render_kw={"class": "btn btn-primary"})
+
+
 # Form - Add and Edit User
 class UserForm(FlaskForm):
     """

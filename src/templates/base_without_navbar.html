@@ -35,8 +35,7 @@
     />
   </head>
   <body>
-    {% include 'navbar.html' %}
-    <div class="container-fluid">
+    <div class="container">
       <main>
         <!--Start Flash-->
         {% with messages=get_flashed_messages(with_categories=true) %} {% if
@@ -63,7 +62,7 @@
     <!-- jQuery JS -->
     <script src="{{ url_for('static', filename='plugins/jquery/jquery.js') }}"></script>
     <!-- Bootstrap JS -->
-    <script src="{{ url_for('static', filename='plugins/bootstrap5/js/bootstrap.bundle.js') }}"></script>
+    <script src="{{ url_for('static', filename='plugins/bootstrap/js/bootstrap.bundle.js') }}"></script>
     <!-- Select2 JS -->
     <script src="{{ url_for('static', filename='plugins/select2/js/select2.full.js') }}"></script>
     <!-- Custom JS-->

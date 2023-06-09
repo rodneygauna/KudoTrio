@@ -1,0 +1,32 @@
+{% extends "base.html" %} {% block content %}
+<div class="container">
+  <h1>Add User</h1>
+  <!-- Start Add User -->
+  <form method="POST">
+    {{ form.hidden_tag() }}
+    <div class="row mb-3">
+      <div class="col-lg-6">
+        {{ form.email.label(class="form-label") }} {{ form.email }}
+      </div>
+      <div class="col-lg-6">
+        {{ form.firstname.label(class="form-label") }} {{ form.firstname }} {{
+        form.lastname.label(class="form-label") }} {{ form.lastname }}
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-lg-6">
+        {{ form.department.label(class="form-label") }} {{ form.department }}
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-lg-6">
+        {{ form.password.label(class="form-label") }} {{ form.password }} {{
+        form.confirm_password.label(class="form-label") }} {{
+        form.confirm_password }}
+      </div>
+    </div>
+    {{ form.submit() }}
+  </form>
+  <!-- End Add User -->
+</div>
+{% endblock content %}

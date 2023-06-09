@@ -15,6 +15,7 @@ from src import db, mail
 from src.users.forms import (
     LoginForm,
     UserForm,
+    UserRegistrationForm,
 )
 from src.models import User
 from src.decorators.decorators import admin_required
@@ -66,6 +67,50 @@ def logout():
     return redirect(url_for('core.index'))
 
 
+# Users - User Registration
+@users_bp.route('/register', methods=['GET', 'POST'])
+def user_registration():
+    """
+    User registration form
+    """
+
+    form = UserRegistrationForm()
+
+    if form.validate_on_submit():
+        # Get form data
+        email = form.email.data
+        firstname = form.firstname.data
+        lastname = form.lastname.data
+        department = form.department.data
+        password = generate_password_hash(form.password.data)
+
+        # Checks if email is already registered
+        if User.query.filter_by(email=form.email.data).first():
+            flash('Email already registered.', 'danger')
+            return redirect(url_for('users.add_user'))
+
+        # Adds user to database
+        new_user = User(
+            email=email,
+            password_hash=password,
+            firstname=firstname,
+            lastname=lastname,
+            department=department,
+            role="user",
+            status="active",
+            created_date=datetime.utcnow(),
+        )
+        db.session.add(new_user)
+        db.session.commit()
+        flash('Registered successfully.', 'success')
+
+        return redirect(url_for('users.login'))
+
+    return render_template('users/registration.html',
+                           title='User Registration',
+                           form=form)
+
+
 # Form - Add user
 @users_bp.route('/add_user', methods=['GET', 'POST'])
 @login_required
@@ -99,7 +144,7 @@ def add_user():
         new_user = User(
             email=email,
             password_hash=generate_password_hash(
-                rand_password, method='sha256'),
+                rand_password),
             firstname=firstname,
             lastname=lastname,
             department=department,
