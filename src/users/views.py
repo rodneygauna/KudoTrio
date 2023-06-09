@@ -159,7 +159,7 @@ def add_user():
 
         # Send email to new user
         msg = Message(
-            "H30 Product App - New User",
+            "KudoTrio - New User",
             recipients=[email],
             sender="noreply@healthtrio.com",
         )
