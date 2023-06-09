@@ -62,3 +62,27 @@ class User(db.Model, UserMixin):
 
     def __repr__(self):
         return f"Username: {self.username}"
+
+
+class Kudo(db.Model):
+    """
+    Kudos model
+    """
+
+    __tablename__ = "kudos"
+
+    # IDs and Foreign Keys
+    id = db.Column(db.Integer, primary_key=True)
+    submitting_user = db.Column(db.Integer, db.ForeignKey("users.id"))
+    receiving_user = db.Column(db.Integer, db.ForeignKey("users.id"))
+    # Kudo information
+    kudo_message = db.Column(db.Text)
+    # Change tracking
+    created_date = db.Column(db.DateTime, nullable=False,
+                             default=datetime.utcnow)
+    created_by = db.Column(db.Integer, db.ForeignKey("users.id"))
+    updated_date = db.Column(db.DateTime)
+    updated_by = db.Column(db.Integer, db.ForeignKey("users.id"))
+
+    def __repr__(self):
+        return f"Kudo: {self.kudo_message}"
