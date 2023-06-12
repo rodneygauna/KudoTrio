@@ -39,7 +39,7 @@ class UserRegistrationForm(FlaskForm):
                             render_kw={"class": "form-control"})
     lastname = StringField('Last Name', validators=[DataRequired()],
                            render_kw={"class": "form-control"})
-    department = SelectField('Department', choices=USER_DEPARTMENT_CHOICES,
+    department = SelectField('Department', coerce=int,
                              validators=[DataRequired()],
                              render_kw={"class": "form-control select2"})
     password = PasswordField('Password', validators=[DataRequired()],
