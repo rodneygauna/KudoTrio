@@ -16,6 +16,8 @@ from src.users.forms import (
     LoginForm,
     UserForm,
     UserRegistrationForm,
+    ChangePasswordForm,
+    ChangeUserStatusForm,
 )
 from src.models import (
     User,
@@ -124,7 +126,7 @@ def user_registration():
 
 
 # Form - Add user
-@users_bp.route('/add_user', methods=['GET', 'POST'])
+@users_bp.route('/settings/add_user', methods=['GET', 'POST'])
 @login_required
 @admin_required
 def add_user():
@@ -168,7 +170,7 @@ def add_user():
                 rand_password),
             firstname=firstname,
             lastname=lastname,
-            department=department_id,
+            department_id=department_id,
             role=role,
             status="active",
             created_date=datetime.utcnow(),
@@ -189,9 +191,11 @@ def add_user():
 
         You have been added as a user.
 
-        Your login email is: {email}
+        Your login email is:
+        {email}
 
-        Your temporary password is: {rand_password}
+        Your temporary password is:
+        {rand_password}
 
         Please login and change your password.
         {url_for('users.login', _external=True)}
@@ -203,3 +207,86 @@ def add_user():
     return render_template('users/add_user.html',
                            title='Add User',
                            form=form)
+
+
+# Users - Force Password Change
+@users_bp.route('/settings/force_password_change/<int:user_id>',
+                methods=['POST'])
+@login_required
+@admin_required
+def force_password_change(user_id):
+    """
+    Force password change
+    """
+
+    # Get user
+    user = User.query.get_or_404(user_id)
+
+    # Change user status
+    if request.method == 'POST':
+
+        # Generate a random password
+        rand_password = "".join(
+            random.choices(string.ascii_lowercase + string.digits, k=12)
+        )
+
+        user.password_hash = generate_password_hash(rand_password)
+        user.updated_date = datetime.utcnow()
+        user.updated_by = current_user.id
+        db.session.commit()
+        flash('User password changed successfully.', 'success')
+
+        # Send email to new user
+        msg = Message(
+            "KudoTrio - Forced Password Change",
+            recipients=[user.email],
+            sender="noreply@healthtrio.com",
+        )
+        msg.body = f"""
+        Hello {user.firstname},
+
+        You're password has been changed by an administrator.
+
+        Your temporary password is:
+        {rand_password}
+
+        Please login and change your password.
+        {url_for('users.login', _external=True)}
+        """
+        mail.send(msg)
+
+        return redirect(url_for('settings.settings_users'))
+
+
+# Users - Change Status
+@users_bp.route('/settings/change_status/<int:user_id>',
+                methods=['GET', 'POST'])
+@login_required
+@admin_required
+def change_status(user_id):
+    """
+    Changes user status
+    """
+
+    form = ChangeUserStatusForm()
+
+    # Get user
+    user = User.query.get_or_404(user_id)
+
+    # Set form status to current user status
+    if request.method == 'GET':
+        form.status.data = user.status
+
+    # Change user status
+    if form.validate_on_submit():
+        user.status = form.status.data
+        user.updated_date = datetime.utcnow()
+        user.updated_by = current_user.id
+        db.session.commit()
+        flash(f'User status changed to {user.status} successfully.', 'success')
+        return redirect(url_for('core.index'))
+
+    return render_template('users/change_status.html',
+                           title='Change User Status',
+                           form=form,
+                           user=user)

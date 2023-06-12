@@ -64,10 +64,11 @@ class UserForm(FlaskForm):
                             render_kw={"class": "form-control"})
     lastname = StringField('Last Name', validators=[DataRequired()],
                            render_kw={"class": "form-control"})
-    department = SelectField('Department', choices=USER_DEPARTMENT_CHOICES,
+    department = SelectField('Department', coerce=int,
                              validators=[DataRequired()],
                              render_kw={"class": "form-control"})
     role = SelectField('Role', choices=USER_ROLE_CHOICES,
+                       default=USER_ROLE_CHOICES[1][0],
                        validators=[DataRequired()],
                        render_kw={"class": "form-control"})
     submit = SubmitField('Save',

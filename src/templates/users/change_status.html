@@ -1,0 +1,18 @@
+{% extends "base.html" %} {% block content %}
+<div class="container">
+  <h1>Change User's Status</h1>
+  <div class="row">
+    <p>{{ user.firstname }} {{ user.lastname }}'s current status is:</p>
+    <p><strong>{{ user.status }}</strong></p>
+  </div>
+  <!-- Start Change User Status -->
+  <form method="POST">
+    {{ form.hidden_tag() }}
+    <div class="row mb-3">
+      <div class="col">{{ form.status.label }} {{ form.status }}</div>
+    </div>
+    {{ form.submit() }}
+  </form>
+  <!-- End Change User Status-->
+</div>
+{% endblock content %}

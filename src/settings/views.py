@@ -208,6 +208,7 @@ def settings_users():
             User.firstname,
             User.lastname,
             User.department_id,
+            User.status,
             Departments.name,
         )
         .outerjoin(Departments, User.department_id == Departments.id)
