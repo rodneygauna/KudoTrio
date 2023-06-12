@@ -4,8 +4,12 @@ This file contains the views for the settings blueprint.
 """
 
 # Imports
-from flask import render_template, url_for, flash, redirect, request, Blueprint
+from datetime import datetime
+from flask import render_template, url_for, flash, redirect, Blueprint
 from flask_login import login_required, current_user
+from src.settings.forms import (
+    DepartmentForm,
+)
 from src.models import (
     User,
     Departments,
@@ -51,6 +55,41 @@ def view_departments():
                            title="Departments",
                            departments=departments,
                            department_user_count=department_user_count)
+
+
+# Settings - Departments - Add Department
+@settings_bp.route("/settings/departments/add", methods=["GET", "POST"])
+@login_required
+@admin_required
+def add_department():
+    """
+    Add department
+    """
+
+    form = DepartmentForm()
+
+    if form.validate_on_submit():
+        # Check if department already exists
+        if Departments.query.filter_by(name=form.name.data).first():
+            flash("Department already exists.", "danger")
+            return redirect(url_for("settings.add_department"))
+
+        # Add department
+        new_department = Departments(
+            name=form.name.data,
+            created_date=datetime.now(),
+            created_by=current_user.id,
+        )
+        db.session.add(new_department)
+        db.session.commit()
+
+        flash("Department added successfully.", "success")
+        return redirect(url_for("settings.view_departments"))
+
+    return render_template("settings/add_edit_department.html",
+                           title="Add Department",
+                           form=form,
+                           )
 
 
 # Settings - Departments - View Department Details
