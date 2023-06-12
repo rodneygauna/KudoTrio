@@ -40,13 +40,13 @@ class User(db.Model, UserMixin):
 
     # IDs and Foreign Keys
     id = db.Column(db.Integer, primary_key=True)
+    department_id = db.Column(db.Integer, db.ForeignKey("departments.id"))
     # User login information
     email = db.Column(db.String(255), unique=True, index=True)
     password_hash = db.Column(db.String(128))
     # User information
     firstname = db.Column(db.String(255))
     lastname = db.Column(db.String(255))
-    department = db.Column(db.String(255))
     role = db.Column(db.String(255))
     status = db.Column(db.String(255), default="active")
     # Change tracking
@@ -64,6 +64,28 @@ class User(db.Model, UserMixin):
         return f"Username: {self.username}"
 
 
+class Departments(db.Model):
+    """
+    Departments model
+    """
+
+    __tablename__ = "departments"
+
+    # IDs and Foreign Keys
+    id = db.Column(db.Integer, primary_key=True)
+    # Department information
+    department = db.Column(db.String(255))
+    # Change tracking
+    created_date = db.Column(db.DateTime, nullable=False,
+                             default=datetime.utcnow)
+    created_by = db.Column(db.Integer, db.ForeignKey("users.id"))
+    updated_date = db.Column(db.DateTime)
+    updated_by = db.Column(db.Integer, db.ForeignKey("users.id"))
+
+    def __repr__(self):
+        return f"Department: {self.department}"
+
+
 class Kudo(db.Model):
     """
     Kudos model
@@ -73,8 +95,8 @@ class Kudo(db.Model):
 
     # IDs and Foreign Keys
     id = db.Column(db.Integer, primary_key=True)
-    submitting_user = db.Column(db.Integer, db.ForeignKey("users.id"))
-    receiving_user = db.Column(db.Integer, db.ForeignKey("users.id"))
+    submitting_user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    receiving_user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     # Kudo information
     kudo_message = db.Column(db.Text)
     # Change tracking
