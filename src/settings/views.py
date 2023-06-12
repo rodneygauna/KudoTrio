@@ -7,6 +7,7 @@ This file contains the views for the settings blueprint.
 from datetime import datetime
 from flask import render_template, url_for, flash, redirect, Blueprint
 from flask_login import login_required, current_user
+from sqlalchemy import func
 from src.settings.forms import (
     DepartmentForm,
 )
@@ -32,8 +33,7 @@ def settings_landing_page():
     Landing page for settings
     """
 
-    return render_template("settings/settings.html",
-                           title="Settings")
+    return render_template("settings/settings.html", title="Settings")
 
 
 # Settings - Departments - View List of Departments
@@ -51,10 +51,12 @@ def view_departments():
     # Get total count of users for each department
     department_user_count = get_department_user_count()
 
-    return render_template("settings/departments.html",
-                           title="Departments",
-                           departments=departments,
-                           department_user_count=department_user_count)
+    return render_template(
+        "settings/departments.html",
+        title="Departments",
+        departments=departments,
+        department_user_count=department_user_count,
+    )
 
 
 # Settings - Departments - Add Department
@@ -70,7 +72,10 @@ def add_department():
 
     if form.validate_on_submit():
         # Check if department already exists
-        if Departments.query.filter_by(name=form.name.data).first():
+        department_name = form.name.data.lower()
+        if Departments.query.filter(
+            func.lower(Departments.name) == department_name
+        ).first():
             flash("Department already exists.", "danger")
             return redirect(url_for("settings.add_department"))
 
@@ -86,10 +91,11 @@ def add_department():
         flash("Department added successfully.", "success")
         return redirect(url_for("settings.view_departments"))
 
-    return render_template("settings/add_edit_department.html",
-                           title="Add Department",
-                           form=form,
-                           )
+    return render_template(
+        "settings/add_edit_department.html",
+        title="Add Department",
+        form=form,
+    )
 
 
 # Settings - Departments - View Department Details
@@ -106,8 +112,7 @@ def view_department_details(department_id):
 
     # Get total count of users for each department
     department_user_count = (
-        db.session.query(User.id)
-        .filter_by(department_id=department_id).count()
+        db.session.query(User.id).filter_by(department_id=department_id).count()
     )
 
     # Get user details for the department
@@ -125,11 +130,13 @@ def view_department_details(department_id):
         .all()
     )
 
-    return render_template("settings/view_department_details.html",
-                           title="Department Details",
-                           department=department,
-                           department_user_count=department_user_count,
-                           department_users=department_users)
+    return render_template(
+        "settings/view_department_details.html",
+        title="Department Details",
+        department=department,
+        department_user_count=department_user_count,
+        department_users=department_users,
+    )
 
 
 # Settings - Users
@@ -154,6 +161,4 @@ def settings_users():
         .all()
     )
 
-    return render_template("settings/users.html",
-                           title="Users",
-                           users=users)
+    return render_template("settings/users.html", title="Users", users=users)
