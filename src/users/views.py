@@ -17,7 +17,10 @@ from src.users.forms import (
     UserForm,
     UserRegistrationForm,
 )
-from src.models import User
+from src.models import (
+    User,
+    Departments,
+)
 from src.decorators.decorators import admin_required
 
 
@@ -76,12 +79,21 @@ def user_registration():
 
     form = UserRegistrationForm()
 
+    # Department choices
+    department_choices = db.session.query(
+        Departments.id, Departments.name
+        ).order_by(Departments.name.asc()).all()
+
+    form.department.choices = [
+        (department.id, department.name) for department in department_choices
+    ]
+
     if form.validate_on_submit():
         # Get form data
         email = form.email.data
         firstname = form.firstname.data
         lastname = form.lastname.data
-        department = form.department.data
+        department_id = form.department.data
         password = generate_password_hash(form.password.data)
 
         # Checks if email is already registered
@@ -95,7 +107,7 @@ def user_registration():
             password_hash=password,
             firstname=firstname,
             lastname=lastname,
-            department=department,
+            department_id=department_id,
             role="user",
             status="active",
             created_date=datetime.utcnow(),
@@ -122,12 +134,21 @@ def add_user():
 
     form = UserForm()
 
+    # Department choices
+    department_choices = db.session.query(
+        Departments.id, Departments.name
+        ).order_by(Departments.name.asc()).all()
+
+    form.department.choices = [
+        (department.id, department.name) for department in department_choices
+    ]
+
     if form.validate_on_submit():
         # Get form data
         email = form.email.data
         firstname = form.firstname.data
         lastname = form.lastname.data
-        department = form.department.data
+        department_id = form.department.data
         role = form.role.data
 
         # Checks if email is already registered
@@ -147,7 +168,7 @@ def add_user():
                 rand_password),
             firstname=firstname,
             lastname=lastname,
-            department=department,
+            department=department_id,
             role=role,
             status="active",
             created_date=datetime.utcnow(),

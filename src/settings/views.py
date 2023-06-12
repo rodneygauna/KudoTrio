@@ -12,6 +12,7 @@ from src.models import (
 )
 from src import db
 from src.decorators.decorators import admin_required
+from src.settings.get_department_user_count import get_department_user_count
 
 
 # Blueprint Configuration
@@ -29,6 +30,27 @@ def settings_landing_page():
 
     return render_template("settings/settings.html",
                            title="Settings")
+
+
+# Settings - Departments - View
+@settings_bp.route("/settings/departments")
+@login_required
+@admin_required
+def view_departments():
+    """
+    View departments
+    """
+
+    # Get all departments
+    departments = Departments.query.order_by(Departments.name.asc()).all()
+
+    # Get total count of users for each department
+    department_user_count = get_department_user_count()
+
+    return render_template("settings/departments.html",
+                           title="Departments",
+                           departments=departments,
+                           department_user_count=department_user_count)
 
 
 # Settings - Users

@@ -1,0 +1,37 @@
+{% extends "base.html" %} {% block content %}
+<div class="container">
+  <h1>Users</h1>
+  <hr />
+  <div class="row">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Department</th>
+          <th scope="col">User Count</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for department in departments %}
+        <tr>
+          <td>{{ department.id }}</td>
+          <td>{{ department.name }}</td>
+          <td>{{ department_user_count.get(department.name, 0) }}</td>
+          <td>
+            <div class="btn-group" role="group" aria-label="actions">
+              <a href="#" class="btn btn-primary btn-sm"
+                ><i class="fa fa-eye"></i> View</a
+              >
+              <a href="#" class="btn btn-outline-primary btn-sm"
+                ><i class="fa fa-edit"></i> Edit</a
+              >
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock content %}
