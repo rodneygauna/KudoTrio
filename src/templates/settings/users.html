@@ -19,7 +19,9 @@
           <td>{{ user.id }}</td>
           <td>{{ user.firstname }}</td>
           <td>{{ user.lastname }}</td>
-          <td></td>
+          <td>
+            {% if user.department_id %} {{ user.name }} {% else %} {% endif %}
+          </td>
           <td>
             <div class="btn-group" role="group" aria-label="actions">
               <a href="#" class="btn btn-primary"

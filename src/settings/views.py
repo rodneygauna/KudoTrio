@@ -7,8 +7,10 @@ This file contains the views for the settings blueprint.
 from flask import render_template, url_for, flash, redirect, request, Blueprint
 from flask_login import login_required, current_user
 from src.models import (
-    User
+    User,
+    Departments,
 )
+from src import db
 from src.decorators.decorators import admin_required
 
 
@@ -38,7 +40,18 @@ def settings_users():
     Settings for users
     """
 
-    users = User.query.all()
+    users = (
+        db.session.query(
+            User.id,
+            User.firstname,
+            User.lastname,
+            User.department_id,
+            Departments.name,
+        )
+        .outerjoin(Departments, User.department_id == Departments.id)
+        .order_by(User.lastname)
+        .all()
+    )
 
     return render_template("settings/users.html",
                            title="Users",
