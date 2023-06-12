@@ -74,7 +74,7 @@ class Departments(db.Model):
     # IDs and Foreign Keys
     id = db.Column(db.Integer, primary_key=True)
     # Department information
-    department = db.Column(db.String(255))
+    name = db.Column(db.String(255))
     # Change tracking
     created_date = db.Column(db.DateTime, nullable=False,
                              default=datetime.utcnow)

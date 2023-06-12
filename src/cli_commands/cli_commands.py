@@ -72,31 +72,30 @@ def seed_db():
         )
 
     # Create 10 users
-    for i in range(10+1):
+    for i in range(1, 10+1):
         entry.append(
             User(
+                department_id=random.randint(1, 10),
                 email=f"test{i}@healthtrio.com",
                 password_hash=generate_password_hash(
                     f"test{i}@healthtrio.com"),
                 firstname=faker.first_name(),
                 lastname=faker.last_name(),
-                role=random.choices(
-                    USER_ROLE_CHOICES)[0],
-                status=random.choices(
-                    STATUS_CHOICES)[0],
+                role=random.choice([item[0] for item in USER_ROLE_CHOICES]),
+                status=random.choice([item[0] for item in STATUS_CHOICES]),
             )
         )
 
     # Create 10 departments
-    for i in range(10+1):
+    for i in range(1, 10+1):
         entry.append(
             Departments(
-                department=faker.word(),
+                name=faker.word(),
             )
         )
 
     # Create 10 kudos
-    for i in range(10+1):
+    for i in range(1, 10+1):
         entry.append(
             Kudo(
                 submitting_user_id=random.randint(1, 10),
