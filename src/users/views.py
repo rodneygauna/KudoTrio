@@ -209,6 +209,34 @@ def add_user():
                            form=form)
 
 
+# Users - Change Password
+@users_bp.route('/change_password/<int:user_id>',
+                methods=['GET', 'POST'])
+@login_required
+def change_password(user_id):
+    """
+    Change user password
+    """
+
+    form = ChangePasswordForm()
+
+    # Get user
+    user = User.query.get_or_404(user_id)
+
+    if form.validate_on_submit():
+        user.password_hash = generate_password_hash(form.password.data)
+        user.updated_date = datetime.utcnow()
+        user.updated_by = current_user.id
+        db.session.commit()
+        flash('Password changed successfully.', 'success')
+        return redirect(url_for('core.index'))
+
+    return render_template('users/change_password.html',
+                           title='Change Password',
+                           form=form,
+                           user=user)
+
+
 # Users - Force Password Change
 @users_bp.route('/settings/force_password_change/<int:user_id>',
                 methods=['POST'])

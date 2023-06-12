@@ -10,7 +10,7 @@ from wtforms import (
 )
 from wtforms.validators import DataRequired, Email, EqualTo
 from src.dictionaries.dictionaries import (
-    USER_ROLE_CHOICES, USER_DEPARTMENT_CHOICES, STATUS_CHOICES
+    USER_ROLE_CHOICES, STATUS_CHOICES
 )
 
 
@@ -42,7 +42,11 @@ class UserRegistrationForm(FlaskForm):
     department = SelectField('Department', coerce=int,
                              validators=[DataRequired()],
                              render_kw={"class": "form-control select2"})
-    password = PasswordField('Password', validators=[DataRequired()],
+    password = PasswordField('Password',
+                             validators=[DataRequired(),
+                                         EqualTo(
+                                             'confirm_password',
+                                             message='Passwords must match.')],
                              render_kw={"class": "form-control"})
     confirm_password = PasswordField('Confirm Password',
                                      validators=[DataRequired(),
@@ -83,11 +87,13 @@ class ChangePasswordForm(FlaskForm):
 
     password = PasswordField(
         'Password',
-        validators=[EqualTo('pass_confirm', message='Passwords must match.')],
+        validators=[DataRequired(),
+                    EqualTo('confirm_password',
+                            message='Passwords must match.')],
         render_kw={"class": "form-control"}
         )
-    pass_confirm = PasswordField('Confirm Password',
-                                 render_kw={"class": "form-control"})
+    confirm_password = PasswordField('Confirm Password',
+                                     render_kw={"class": "form-control"})
     submit = SubmitField('Save',
                          render_kw={"class": "btn btn-primary"})
 
