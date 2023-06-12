@@ -1,6 +1,6 @@
 {% extends "base.html" %} {% block content %}
 <div class="container">
-  <h1>Users</h1>
+  <h1>Departments</h1>
   <hr />
   <div class="row">
     <table class="table table-striped">
@@ -20,7 +20,9 @@
           <td>{{ department_user_count.get(department.name, 0) }}</td>
           <td>
             <div class="btn-group" role="group" aria-label="actions">
-              <a href="#" class="btn btn-primary btn-sm"
+              <a
+                href="{{ url_for('settings.view_department_details', department_id=department.id) }}"
+                class="btn btn-primary btn-sm"
                 ><i class="fa fa-eye"></i> View</a
               >
               <a href="#" class="btn btn-outline-primary btn-sm"

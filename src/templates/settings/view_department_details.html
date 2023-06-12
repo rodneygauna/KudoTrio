@@ -1,0 +1,60 @@
+{% extends "base.html" %} {% block content %}
+<div class="container">
+  <h1>{{ department.name }}</h1>
+  <hr />
+  <div class="row mt-4 mb-4">
+    <div>
+      <a href="#" class="btn btn-primary"
+        ><i class="fa fa-edit"></i> Edit Department</a
+      >
+    </div>
+  </div>
+  <!-- Start Department Info -->
+  <div class="row mb-4">
+    <div class="col">
+      <div>User Count:</div>
+      {{ department_user_count }}
+    </div>
+    <div class="col">
+      <div>Created:</div>
+      {{ department.created_date.strftime('%B %d, %Y') }} {% if
+      department.created_by %} by user_id: {{ department.created_by }} {% endif
+      %}
+    </div>
+    <div class="col">
+      <div>Updated:</div>
+      {% if department.updated_date %} {{ department.updated_date.strftime('%B
+      %d, %Y') }} {% if department.updated_by %} by user_id: {{
+      department.updated_by }} {% endif %} {% else %} N/A {% endif %}
+    </div>
+  </div>
+  <!-- End Department Info -->
+  <!-- Start Department User List -->
+  <div class="row">
+    <h2>Department User List</h2>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Firstname</th>
+          <th scope="col">Lastname</th>
+          <th scope="col">Email</th>
+          <th scope="col">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for user in department_users %}
+        <tr>
+          <td>{{ user.id }}</td>
+          <td>{{ user.firstname }}</td>
+          <td>{{ user.lastname }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.status }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <!-- End Department User List -->
+</div>
+{% endblock content %}
