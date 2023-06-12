@@ -1,0 +1,27 @@
+{% extends "base.html" %} {% block content %}
+<h1>Kudos</h1>
+<hr />
+<div class="row mt-4 mb-4">
+  <div>
+    <a href="{{ url_for('kudos.create_kudo') }}" class="btn btn-primary"
+      ><i class="fa fa-plus"></i> Create Kudo</a
+    >
+  </div>
+</div>
+<!-- Start Kudos -->
+<div class="row">
+  <strong>WILL UPDATE THIS DESIGN ASAP</strong>
+  <br />
+  <br />
+  {% for kudo in kudos %} {{ kudo.creating_user_firstname }} {{
+  kudo.creating_user_lastname }} ({{ kudo.creating_user_department_name }}) gave
+  {{ kudo.receiving_user_firstname }} {{ kudo.receiving_user_lastname }} ({{
+  kudo.receiving_user_department_name }}) a kudo on {{ kudo.created_date }}!
+  <br />
+  {{ kudo.kudo_message }}
+  <br />
+  <br />
+  {% endfor %}
+</div>
+<!-- End Kudos -->
+{% endblock content %}

@@ -63,6 +63,7 @@ from src.core.views import core_bp
 from src.cli_commands.cli_commands import commands_bp
 from src.users.views import users_bp
 from src.settings.views import settings_bp
+from src.kudos.views import kudos_bp
 
 
 # Flask Blueprint Registrations
@@ -70,3 +71,4 @@ app.register_blueprint(core_bp)
 app.register_blueprint(commands_bp)
 app.register_blueprint(users_bp)
 app.register_blueprint(settings_bp)
+app.register_blueprint(kudos_bp)
