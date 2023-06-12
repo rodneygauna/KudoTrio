@@ -5,7 +5,7 @@ This file contains the views for the settings blueprint.
 
 # Imports
 from datetime import datetime
-from flask import render_template, url_for, flash, redirect, Blueprint
+from flask import render_template, url_for, flash, request, redirect, Blueprint
 from flask_login import login_required, current_user
 from sqlalchemy import func
 from src.settings.forms import (
@@ -98,6 +98,58 @@ def add_department():
     )
 
 
+# Settings - Departments - Edit Department
+@settings_bp.route(
+    "/settings/departments/edit/<int:department_id>",
+    methods=["GET", "POST"]
+)
+@login_required
+@admin_required
+def edit_department(department_id):
+    """
+    Edit department
+    """
+
+    form = DepartmentForm()
+
+    # Get department
+    department = Departments.query.get_or_404(department_id)
+
+    # Populate form fields
+    if request.method == "GET":
+        form.name.data = department.name
+
+        return render_template(
+            "settings/add_edit_department.html",
+            title="Edit Department",
+            form=form,
+        )
+
+    if form.validate_on_submit():
+        # Check if department already exists
+        department_name = form.name.data.lower()
+        if Departments.query.filter(
+            func.lower(Departments.name) == department_name
+        ).first():
+            flash("Department already exists.", "danger")
+            return redirect(url_for("settings.edit_department",
+                                    department_id=department_id))
+
+        # Update department
+        try:
+            department.name = form.name.data
+            department.updated_date = datetime.now()
+            department.updated_by = current_user.id
+            db.session.commit()
+            flash("Department updated successfully.", "success")
+        except Exception as e:
+            flash(f"Error updating department. Error: {e}", "danger")
+            return redirect(url_for("settings.edit_department",
+                                    department_id=department_id))
+
+        return redirect(url_for("settings.view_departments"))
+
+
 # Settings - Departments - View Department Details
 @settings_bp.route("/settings/departments/<int:department_id>")
 @login_required
@@ -112,7 +164,9 @@ def view_department_details(department_id):
 
     # Get total count of users for each department
     department_user_count = (
-        db.session.query(User.id).filter_by(department_id=department_id).count()
+        db.session.query(User.id).filter_by(
+            department_id=department_id
+            ).count()
     )
 
     # Get user details for the department

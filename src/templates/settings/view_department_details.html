@@ -4,7 +4,9 @@
   <hr />
   <div class="row mt-4 mb-4">
     <div>
-      <a href="#" class="btn btn-primary"
+      <a
+        href="{{ url_for('settings.edit_department', department_id=department.id) }}"
+        class="btn btn-primary"
         ><i class="fa fa-edit"></i> Edit Department</a
       >
     </div>
