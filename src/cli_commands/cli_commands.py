@@ -14,11 +14,9 @@ from src.models import (
     Kudo,
 )
 from src.dictionaries.dictionaries import (
-    USER_DEPARTMENT_CHOICES,
     USER_ROLE_CHOICES,
     STATUS_CHOICES,
 )
-
 
 
 # Faker Generator
@@ -90,7 +88,7 @@ def seed_db():
     for i in range(1, 10+1):
         entry.append(
             Departments(
-                name=faker.word(),
+                name=faker.job(),
             )
         )
 
