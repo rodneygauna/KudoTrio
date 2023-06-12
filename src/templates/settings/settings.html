@@ -1,18 +1,18 @@
-{% expands "base.html"} {% block content %}
+{% extends "base.html" %} {% block content %}
 <div class="container">
   <h1>Settings</h1>
   <hr />
   <div class="row">
-    <div class="col-md-6">
+    <div class="col">
       <h3>General</h3>
       <a href="#" class="btn btn-primary"
-        ><i class="fa fa-eye"></i> View Departments</a
+        ><i class="fa fa-list"></i> View Departments</a
       >
       <a href="#" class="btn btn-primary"
         ><i class="fa fa-plus"></i> Add Department</a
       >
     </div>
-    <div class="col-md-6">
+    <div class="col">
       <h3>Users</h3>
       <a href="#" class="btn btn-primary"
         ><i class="fa fa-list"></i> View Users</a
@@ -21,9 +21,9 @@
         ><i class="fa fa-plus"></i> Add Users</a
       >
       <a href="#" class="btn btn-primary"
-        ><i class="fa fa-list"></i> Bulk Add Users</a
+        ><i class="fa fa-upload"></i> Bulk Add Users</a
       >
     </div>
   </div>
-  {% endblock content %}
 </div>
+{% endblock content %}
