@@ -16,6 +16,10 @@ from src.models import (
     User,
     Departments,
     Kudo,
+    Meme,
+)
+from src.kudos.generate_meme import (
+    meme_templates,
 )
 
 
@@ -109,6 +113,7 @@ def kudos_landing_page():
             ReceivingUser.department_id,
             ReceivingUserDepartment.name.label(
                 "receiving_user_department_name"),
+            Meme.meme_url,
         )
         .outerjoin(CreatingUser,
                    CreatingUser.id == Kudo.submitting_user_id)
@@ -118,6 +123,7 @@ def kudos_landing_page():
                    ReceivingUser.id == Kudo.receiving_user_id)
         .outerjoin(ReceivingUserDepartment,
                    ReceivingUserDepartment.id == ReceivingUser.department_id)
+        .outerjoin(Meme, Meme.kudo_id == Kudo.id)
         .order_by(Kudo.created_date.desc())
         .limit(10)
     )
@@ -165,6 +171,11 @@ def create_kudo():
         (user.id, user.firstname + " " + user.lastname)
         for user in active_users]
 
+    # Meme choices
+    form.meme_template.choices = [
+        (meme["id"], meme["name"]) for meme in meme_templates()
+        ]
+
     # If user clicks cancel, redirect to kudos landing page
     if form.cancel.data:
         return redirect(url_for("kudos.kudos_landing_page"))
@@ -190,6 +201,23 @@ def create_kudo():
 
         db.session.add(new_kudo)
         db.session.commit()
+
+        # If user selects a meme, create new meme
+        meme_url_concat = f"https://api.memegen.link/images/{form.meme_template.data}/{form.meme_top_text.data}/{form.meme_bottom_text.data}.png"
+        if form.meme_template.data:
+            new_meme = Meme(
+                kudo_id=new_kudo.id,
+                meme_template=form.meme_template.data,
+                meme_top_text=form.meme_top_text.data,
+                meme_bottom_text=form.meme_bottom_text.data,
+                meme_url=meme_url_concat,
+                created_date=datetime.utcnow(),
+                created_by=current_user.id
+            )
+
+            db.session.add(new_meme)
+            db.session.commit()
+            
         flash("Kudo created successfully!", "success")
 
         # Send email to receiving user

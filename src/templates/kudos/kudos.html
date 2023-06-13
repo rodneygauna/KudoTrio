@@ -58,7 +58,9 @@
   {{ kudo.receiving_user_firstname }} {{ kudo.receiving_user_lastname }} ({{
   kudo.receiving_user_department_name }}) a kudo on {{ kudo.created_date }}!
   <br />
-  {{ kudo.kudo_message }}
+  {{ kudo.kudo_message }} {% if kudo.meme_url %}
+  <img src="{{ kudo.meme_url }}" style="max-width: 50%" />
+  {% endif %}
   <br />
   <br />
   {% endfor %}

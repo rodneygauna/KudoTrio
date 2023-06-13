@@ -12,8 +12,54 @@
         {{ form.kudo_message.label }} {{ form.kudo_message }}
       </div>
     </div>
+    <div class="row mb-4">
+      <div class="col">
+        {{ form.meme_top_text.label }} {{ form.meme_top_text }} {{
+        form.meme_bottom_text.label }} {{ form.meme_bottom_text }} {{
+        form.meme_template.label }} {{ form.meme_template }}
+      </div>
+      <div class="col">
+        <img
+          id="meme-image"
+          src=""
+          alt="Meme Image"
+          class="img-fluid mt-3"
+          style="max-width: 400px"
+        />
+      </div>
+    </div>
     {{ form.submit() }} {{ form.cancel() }}
   </form>
   <!-- End Add Kudo -->
 </div>
+
+<script>
+  // Listen for changes in the meme template dropdown
+  document
+    .querySelector('select[name="meme_template"]')
+    .addEventListener("change", function () {
+      // Get the text top
+      var selectedTextTop = document.querySelector(
+        'input[name="meme_top_text"]'
+      ).value;
+      // Get the text bottom
+      var selectedTextBottom = document.querySelector(
+        'input[name="meme_bottom_text"]'
+      ).value;
+      // Get the selected meme template ID
+      var selectedTemplate = this.value;
+      // Generate the URL for the meme image using the selected template ID
+      var memeImageUrl =
+        "https://api.memegen.link/images/" +
+        selectedTemplate +
+        "/" +
+        selectedTextTop +
+        "/" +
+        selectedTextBottom +
+        ".png";
+      console.log(memeImageUrl);
+      // Set the source of the image element to the generated URL
+      document.getElementById("meme-image").src = memeImageUrl;
+    });
+</script>
 {% endblock content %}

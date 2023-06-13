@@ -6,7 +6,7 @@ This file contains the forms for the kudos blueprint.
 # Imports
 from flask_wtf import FlaskForm
 from wtforms import (
-    TextAreaField, SelectField, SubmitField
+    TextAreaField, StringField, SelectField, SubmitField
 )
 from wtforms.validators import DataRequired
 
@@ -26,6 +26,12 @@ class KudoForm(FlaskForm):
     kudo_message = TextAreaField("Kudo Message", validators=[DataRequired()],
                                  render_kw={"class": "form-control",
                                             "rows": 5})
+    meme_top_text = StringField("Text Top",
+                                render_kw={"class": "form-control"})
+    meme_bottom_text = StringField("Text Bottom",
+                                   render_kw={"class": "form-control"})
+    meme_template = SelectField("Meme Template", coerce=str,
+                                render_kw={"class": "form-control"})
     submit = SubmitField("Save",
                          render_kw={"class": "btn btn-primary"})
     cancel = SubmitField('Cancel',

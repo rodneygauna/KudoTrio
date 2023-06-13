@@ -108,3 +108,31 @@ class Kudo(db.Model):
 
     def __repr__(self):
         return f"Kudo: {self.kudo_message}"
+
+
+class Meme(db.Model):
+    """
+    Meme model
+    """
+
+    __tablename__ = "memes"
+
+    # IDs and Foreign Keys
+    id = db.Column(db.Integer, primary_key=True)
+    kudo_id = db.Column(db.Integer, db.ForeignKey("kudos.id"))
+    # Meme information
+    meme_template = db.Column(db.Text)
+    meme_top_text = db.Column(db.Text)
+    meme_bottom_text = db.Column(db.Text)
+    meme_url = db.Column(db.Text)
+    # Change tracking
+    created_date = db.Column(db.DateTime, nullable=False,
+                             default=datetime.utcnow)
+    created_by = db.Column(db.Integer, db.ForeignKey("users.id"))
+    updated_date = db.Column(db.DateTime)
+    updated_by = db.Column(db.Integer, db.ForeignKey("users.id"))
+
+    def __repr__(self):
+        return f"""
+    Meme: {self.meme_template} - {self.meme_top_text} - {self.meme_bottom_text}
+    """
