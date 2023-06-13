@@ -154,6 +154,7 @@ def create_kudo():
             User.status,
         )
         .filter(User.status == "active")
+        .filter(User.id != current_user.id)
         .order_by(User.lastname.asc())
         .all()
     )
