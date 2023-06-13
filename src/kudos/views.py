@@ -66,6 +66,25 @@ def kudos_landing_page():
         ]
     kudos_receiver_data = [kudo.count for kudo in kudos_receiver]
 
+    # Dashboard - Top 5 Creating Users
+    kudos_creator = (
+        db.session.query(
+            User.firstname,
+            User.lastname,
+            db.func.count(Kudo.submitting_user_id).label("count")
+        )
+        .join(User, User.id == Kudo.submitting_user_id)
+        .filter(Kudo.created_date >= start_date)
+        .group_by(Kudo.submitting_user_id, User.firstname, User.lastname)
+        .order_by(db.desc("count"))
+        .limit(5)
+        .all()
+    )
+    kudos_creator_labels = [
+        f"{kudo.firstname} {kudo.lastname}" for kudo in kudos_creator
+        ]
+    kudos_creator_data = [kudo.count for kudo in kudos_creator]
+
     # Get the last 10 created kudos
     CreatingUser = db.aliased(User, name="CreatingUser")
     CreatingUserDepartment = db.aliased(
@@ -111,6 +130,8 @@ def kudos_landing_page():
         kudos_graph_data=kudos_graph_data,
         kudos_receiver_labels=kudos_receiver_labels,
         kudos_receiver_data=kudos_receiver_data,
+        kudos_creator_labels=kudos_creator_labels,
+        kudos_creator_data=kudos_creator_data,
     )
 
 

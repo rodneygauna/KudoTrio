@@ -22,6 +22,20 @@
       </div>
     </div>
   </div>
+</div>
+<div class="row mb-4">
+  <div class="col">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title">Top 5 Submitters (Last 120 Days)</h5>
+      </div>
+      <div class="card-body">
+        <div class="chart-container">
+          <canvas id="kudosCreator"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="col">
     <div class="card">
       <div class="card-header">
@@ -39,8 +53,6 @@
 <!-- Start Kudos -->
 <div class="row">
   <strong>WILL UPDATE THIS DESIGN ASAP</strong>
-  <br />
-  <br />
   {% for kudo in kudos %} {{ kudo.creating_user_firstname }} {{
   kudo.creating_user_lastname }} ({{ kudo.creating_user_department_name }}) gave
   {{ kudo.receiving_user_firstname }} {{ kudo.receiving_user_lastname }} ({{
@@ -99,6 +111,37 @@
             {
             label: "Receivers",
             data: gKReceiverData,
+            borderWidth: 2,
+            backgroundColor: "#0b5ed7",
+            borderColor: "#0b5ed7",
+            pointBackgroundColor: "#ffffff",
+            },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false,
+          },
+        },
+      },
+    });
+
+    /* Dashboard - Top 5 Creators */
+  var gKCreatorLabels = {{ kudos_creator_labels | tojson }};
+  var gKCreatorData = {{ kudos_creator_data | tojson }};
+
+  var ctx2 = document.getElementById("kudosCreator").getContext("2d");
+  var myChart2 = new Chart(ctx2, {
+      type: "bar",
+      data: {
+        labels: gKCreatorLabels,
+        datasets: [
+            {
+            label: "Receivers",
+            data: gKCreatorData,
             borderWidth: 2,
             backgroundColor: "#0b5ed7",
             borderColor: "#0b5ed7",
