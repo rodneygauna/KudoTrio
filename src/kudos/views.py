@@ -203,7 +203,10 @@ def create_kudo():
         db.session.commit()
 
         # If user selects a meme, create new meme
-        meme_url_concat = f"https://api.memegen.link/images/{form.meme_template.data}/{form.meme_top_text.data}/{form.meme_bottom_text.data}.png"
+        meme_url_concat = (
+            f"https://api.memegen.link/images/{form.meme_template.data}/{form.meme_top_text.data}/{form.meme_bottom_text.data}.png"
+        )
+
         if form.meme_template.data:
             new_meme = Meme(
                 kudo_id=new_kudo.id,
@@ -217,7 +220,7 @@ def create_kudo():
 
             db.session.add(new_meme)
             db.session.commit()
-            
+
         flash("Kudo created successfully!", "success")
 
         # Send email to receiving user
