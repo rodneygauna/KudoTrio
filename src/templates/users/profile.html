@@ -55,6 +55,12 @@
     </div>
     {% endfor %} {% else %}
     <p>No kudos submitted yet.</p>
+    <p>
+      Try creating one yourself here:
+      <a href="{{ url_for('kudos.create_kudo') }}" class="link"
+        >Create New Kudo</a
+      >
+    </p>
     {% endif %}
   </div>
   <div class="col">
