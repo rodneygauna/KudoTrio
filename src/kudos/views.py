@@ -4,7 +4,7 @@ This file contains the views for the kudos blueprint.
 """
 
 # Imports
-from datetime import datetime
+from datetime import datetime, timedelta
 from flask import render_template, url_for, flash, redirect, Blueprint
 from flask_login import login_required, current_user
 from src.kudos.forms import (
@@ -30,6 +30,41 @@ def kudos_landing_page():
     """
     Landing page for kudos
     """
+
+    # Start Date for Dashboards (120 Days)
+    start_date = datetime.now() - timedelta(days=120)
+
+    # Dashboard - Count
+    kudos_count = (
+        db.session.query(
+            db.func.count(Kudo.id).label("count"),
+            db.func.strftime("%Y-%m", Kudo.created_date).label("month")
+        )
+        .filter(Kudo.created_date >= start_date)
+        .group_by("month")
+        .all()
+    )
+    kudos_graph_labels = [kudo.month for kudo in kudos_count]
+    kudos_graph_data = [kudo.count for kudo in kudos_count]
+
+    # Dashboard - Top 5 Receiving Users
+    kudos_receiver = (
+        db.session.query(
+            User.firstname,
+            User.lastname,
+            db.func.count(Kudo.receiving_user_id).label("count")
+        )
+        .join(User, User.id == Kudo.receiving_user_id)
+        .filter(Kudo.created_date >= start_date)
+        .group_by(Kudo.receiving_user_id, User.firstname, User.lastname)
+        .order_by(db.desc("count"))
+        .limit(5)
+        .all()
+    )
+    kudos_receiver_labels = [
+        f"{kudo.firstname} {kudo.lastname}" for kudo in kudos_receiver
+        ]
+    kudos_receiver_data = [kudo.count for kudo in kudos_receiver]
 
     # Get the last 10 created kudos
     CreatingUser = db.aliased(User, name="CreatingUser")
@@ -72,6 +107,10 @@ def kudos_landing_page():
         "kudos/kudos.html",
         title="Kudos",
         kudos=kudos,
+        kudos_graph_labels=kudos_graph_labels,
+        kudos_graph_data=kudos_graph_data,
+        kudos_receiver_labels=kudos_receiver_labels,
+        kudos_receiver_data=kudos_receiver_data,
     )
 
 

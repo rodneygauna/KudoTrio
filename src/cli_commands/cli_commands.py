@@ -93,12 +93,14 @@ def seed_db():
         )
 
     # Create 10 kudos
-    for i in range(1, 10+1):
+    for i in range(1, 100+1):
         entry.append(
             Kudo(
                 submitting_user_id=random.randint(1, 10),
                 receiving_user_id=random.randint(1, 10),
                 kudo_message=faker.text(),
+                created_date=faker.date_between(
+                    start_date='-120d', end_date='today'),
             )
         )
 

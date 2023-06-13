@@ -8,6 +8,34 @@
     >
   </div>
 </div>
+<!-- Start Dashboards -->
+<div class="row mb-4">
+  <div class="col">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title">Kudos (Last 120 Days)</h5>
+      </div>
+      <div class="card-body">
+        <div class="chart-container">
+          <canvas id="kudosCount" class="h-275"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title">Top 5 Kudo Receivers (Last 120 Days)</h5>
+      </div>
+      <div class="card-body">
+        <div class="chart-container">
+          <canvas id="kudosReceiver" class="h-275"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End Dashboards -->
 <!-- Start Kudos -->
 <div class="row">
   <strong>WILL UPDATE THIS DESIGN ASAP</strong>
@@ -24,4 +52,74 @@
   {% endfor %}
 </div>
 <!-- End Kudos -->
+<!-- Start Graphs -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.0/dist/chart.umd.min.js"></script>
+<script type="text/javascript">
+  /* Dashboard - Count */
+  var gKudosLabels = {{ kudos_graph_labels | tojson }};
+  var gKudosData = {{ kudos_graph_data | tojson }};
+
+  var ctx = document.getElementById("kudosCount").getContext("2d");
+  var myChart = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: gKudosLabels,
+        datasets: [
+            {
+            label: "Kudos",
+            data: gKudosData,
+            borderWidth: 2,
+            backgroundColor: "#0b5ed7",
+            borderColor: "#0b5ed7",
+            borderWidth: 2.0,
+            pointBackgroundColor: "#ffffff",
+            },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        legend: {
+          display: true,
+          labels: {
+            fontColor: "#000",
+          },
+        },
+      },
+    });
+
+    /* Dashboard - Top 5 Receivers */
+  var gKReceiverLabels = {{ kudos_receiver_labels | tojson }};
+  var gKReceiverData = {{ kudos_receiver_data | tojson }};
+
+  var ctx = document.getElementById("kudosReceiver").getContext("2d");
+  var myChart = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: gKReceiverLabels,
+        datasets: [
+            {
+            label: "Recievers",
+            data: gKReceiverData,
+            borderWidth: 2,
+            backgroundColor: "#0b5ed7",
+            borderColor: "#0b5ed7",
+            borderWidth: 2.0,
+            pointBackgroundColor: "#ffffff",
+            },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        legend: {
+          display: true,
+          labels: {
+            fontColor: "#000",
+          },
+        },
+      },
+    });
+</script>
+<!-- End Graphs -->
 {% endblock content %}
