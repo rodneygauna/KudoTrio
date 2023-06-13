@@ -71,7 +71,6 @@
             borderWidth: 2,
             backgroundColor: "#0b5ed7",
             borderColor: "#0b5ed7",
-            borderWidth: 2.0,
             pointBackgroundColor: "#ffffff",
             },
         ],
@@ -79,32 +78,30 @@
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        legend: {
-          display: true,
-          labels: {
-            fontColor: "#000",
+        plugins: {
+          legend: {
+            display: false,
           },
         },
       },
     });
 
-    /* Dashboard - Top 5 Receivers */
+  /* Dashboard - Top 5 Receivers */
   var gKReceiverLabels = {{ kudos_receiver_labels | tojson }};
   var gKReceiverData = {{ kudos_receiver_data | tojson }};
 
-  var ctx = document.getElementById("kudosReceiver").getContext("2d");
-  var myChart = new Chart(ctx, {
+  var ctx2 = document.getElementById("kudosReceiver").getContext("2d");
+  var myChart2 = new Chart(ctx2, {
       type: "bar",
       data: {
         labels: gKReceiverLabels,
         datasets: [
             {
-            label: "Recievers",
+            label: "Receivers",
             data: gKReceiverData,
             borderWidth: 2,
             backgroundColor: "#0b5ed7",
             borderColor: "#0b5ed7",
-            borderWidth: 2.0,
             pointBackgroundColor: "#ffffff",
             },
         ],
@@ -112,14 +109,14 @@
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        legend: {
-          display: true,
-          labels: {
-            fontColor: "#000",
+        plugins: {
+          legend: {
+            display: false,
           },
         },
       },
     });
 </script>
 <!-- End Graphs -->
+
 {% endblock content %}
