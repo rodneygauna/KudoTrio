@@ -1,0 +1,86 @@
+{% extends "base.html" %} {% block content %}
+<h1>Profile</h1>
+<hr />
+{% if current_user.id == user.id %}
+<div class="row mt-4 mb-4">
+  <div>
+    <a
+      href="{{ url_for('users.edit_profile', user_id=current_user.id) }}"
+      class="btn btn-primary"
+      ><i class="fa fa-edit"></i> Edit Profile</a
+    >
+    <a
+      href="{{ url_for('users.change_password', user_id=current_user.id) }}"
+      class="btn btn-outline-primary"
+      ><i class="fa fa-lock"></i> Change Password</a
+    >
+  </div>
+</div>
+{% endif %}
+<!-- Start Profile Info -->
+<div class="row mt-4">
+  <div class="col">
+    <h5>{{ user.firstname }} {{user.lastname }}</h5>
+  </div>
+  <div class="col">
+    <p>{{ user.department_id }}</p>
+  </div>
+</div>
+<div class="row mb-4">
+  <div class="col">{{ user.role }}</div>
+</div>
+<!-- End Profile Info -->
+<!-- Start Last Kudos -->
+<div class="row">
+  <div class="col">
+    <h5>Last 10 Sent Kudos</h5>
+    {% if kudos_submitted %} {% for sent in kudos_submitted %}
+    <div class="card mt-2">
+      <div class="card-body">
+        <h5 class="card-title">
+          Sent to:
+          <br />
+          {{ sent.receiving_user_firstname }} {{ sent.receiving_user_lastname }}
+        </h5>
+        <h6 class="card-subtitle mb-2 text-muted">
+          {{ sent.receiving_user_department_name }}
+        </h6>
+        <p class="card-text">{{ sent.kudo_message }}</p>
+        <p class="card-text">
+          <small class="text-muted">Submitted on {{ sent.created_date }}</small>
+        </p>
+      </div>
+    </div>
+    {% endfor %} {% else %}
+    <p>No kudos submitted yet.</p>
+    {% endif %}
+  </div>
+  <div class="col">
+    <h5>Last 10 Received Kudos</h5>
+    {% if kudos_received %} {% for received in kudos_received %}
+    <div class="card mt-2">
+      <div class="card-body">
+        <h5 class="card-title">
+          Received from:
+          <br />
+          {{ received.receiving_user_firstname }} {{
+          received.receiving_user_lastname }}
+        </h5>
+        <h6 class="card-subtitle mb-2 text-muted">
+          {{ received.receiving_user_department_name }}
+        </h6>
+        <p class="card-text">{{ received.kudo_message }}</p>
+        <p class="card-text">
+          <small class="text-muted"
+            >Received on {{ received.created_date }}</small
+          >
+        </p>
+      </div>
+    </div>
+    {% endfor %} {% else %}
+    <p>No kudos received yet.</p>
+    {% endif %}
+  </div>
+</div>
+<!-- End Last Kudos -->
+{% endblock content %}

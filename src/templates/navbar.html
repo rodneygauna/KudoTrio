@@ -17,7 +17,7 @@
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
           <a
-            class="nav-link active"
+            class="nav-link"
             aria-current="page"
             href="{{ url_for('core.index') }}"
             ><i class="fa-solid fa-home"></i> Home</a
@@ -40,9 +40,16 @@
       </ul>
       <span class="navbar-text">
         {% if current_user.is_authenticated %}
-        <a class="nav-link" href="{{ url_for('users.logout') }}"
-          ><i class="fa-solid fa-user"></i> Logout</a
-        >
+        <div class="btn-group">
+          <a
+            class="nav-link me-3"
+            href="{{ url_for('users.profile', user_id=current_user.id) }}"
+            ><i class="fa-solid fa-user"></i> Profile</a
+          >
+          <a class="nav-link" href="{{ url_for('users.logout') }}"
+            ><i class="fa-solid fa-user-ninja"></i> Logout</a
+          >
+        </div>
         {% else %}
         <a class="nav-link" href="{{ url_for('users.login') }}"
           ><i class="fa-solid fa-user"></i> Login</a

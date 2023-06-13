@@ -70,7 +70,7 @@ class UserForm(FlaskForm):
                            render_kw={"class": "form-control"})
     department = SelectField('Department', coerce=int,
                              validators=[DataRequired()],
-                             render_kw={"class": "form-control"})
+                             render_kw={"class": "form-control select2"})
     role = SelectField('Role', choices=USER_ROLE_CHOICES,
                        default=USER_ROLE_CHOICES[1][0],
                        validators=[DataRequired()],

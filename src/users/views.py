@@ -22,6 +22,7 @@ from src.users.forms import (
 from src.models import (
     User,
     Departments,
+    Kudo,
 )
 from src.decorators.decorators import admin_required
 
@@ -223,6 +224,9 @@ def change_password(user_id):
     # Get user
     user = User.query.get_or_404(user_id)
 
+    if current_user.id != user.id:
+        return "You are not authorized to view this page.", 401
+
     if form.validate_on_submit():
         user.password_hash = generate_password_hash(form.password.data)
         user.updated_date = datetime.utcnow()
@@ -316,5 +320,146 @@ def change_status(user_id):
 
     return render_template('users/change_status.html',
                            title='Change User Status',
+                           form=form,
+                           user=user)
+
+
+# Users - Profile
+@users_bp.route('/profile/<int:user_id>')
+@login_required
+def profile(user_id):
+    """
+    User profile
+    """
+
+    # Get user
+    user = User.query.get_or_404(user_id)
+
+    # Get Kudos
+    CreatingUser = db.aliased(User, name="CreatingUser")
+    CreatingUserDepartment = db.aliased(
+        Departments, name="CreatingUserDepartment")
+    ReceivingUser = db.aliased(User, name="ReceivingUser")
+    ReceivingUserDepartment = db.aliased(
+        Departments, name="ReceivingUserDepartment")
+
+    kudos_submitted = (
+        db.session.query(
+            Kudo.id,
+            Kudo.submitting_user_id,
+            Kudo.receiving_user_id,
+            Kudo.kudo_message,
+            Kudo.created_date,
+            CreatingUser.firstname.label("creating_user_firstname"),
+            CreatingUser.lastname.label("creating_user_lastname"),
+            CreatingUser.department_id,
+            CreatingUserDepartment.name.label("creating_user_department_name"),
+            ReceivingUser.firstname.label("receiving_user_firstname"),
+            ReceivingUser.lastname.label("receiving_user_lastname"),
+            ReceivingUser.department_id,
+            ReceivingUserDepartment.name.label(
+                "receiving_user_department_name"),
+        )
+        .outerjoin(CreatingUser,
+                   CreatingUser.id == Kudo.submitting_user_id)
+        .outerjoin(CreatingUserDepartment,
+                   CreatingUserDepartment.id == CreatingUser.department_id)
+        .outerjoin(ReceivingUser,
+                   ReceivingUser.id == Kudo.receiving_user_id)
+        .outerjoin(ReceivingUserDepartment,
+                   ReceivingUserDepartment.id == ReceivingUser.department_id)
+        .filter(Kudo.submitting_user_id == user_id)
+        .order_by(Kudo.created_date.desc())
+        .limit(10)
+    )
+
+    kudos_received = (
+        db.session.query(
+            Kudo.id,
+            Kudo.submitting_user_id,
+            Kudo.receiving_user_id,
+            Kudo.kudo_message,
+            Kudo.created_date,
+            CreatingUser.firstname.label("creating_user_firstname"),
+            CreatingUser.lastname.label("creating_user_lastname"),
+            CreatingUser.department_id,
+            CreatingUserDepartment.name.label("creating_user_department_name"),
+            ReceivingUser.firstname.label("receiving_user_firstname"),
+            ReceivingUser.lastname.label("receiving_user_lastname"),
+            ReceivingUser.department_id,
+            ReceivingUserDepartment.name.label(
+                "receiving_user_department_name"),
+        )
+        .outerjoin(CreatingUser,
+                   CreatingUser.id == Kudo.submitting_user_id)
+        .outerjoin(CreatingUserDepartment,
+                   CreatingUserDepartment.id == CreatingUser.department_id)
+        .outerjoin(ReceivingUser,
+                   ReceivingUser.id == Kudo.receiving_user_id)
+        .outerjoin(ReceivingUserDepartment,
+                   ReceivingUserDepartment.id == ReceivingUser.department_id)
+        .filter(Kudo.receiving_user_id == user_id)
+        .order_by(Kudo.created_date.desc())
+        .limit(10)
+    )
+
+    return render_template('users/profile.html',
+                           title='User Profile',
+                           user=user,
+                           kudos_submitted=kudos_submitted,
+                           kudos_received=kudos_received)
+
+
+# Users - Edit Profile
+@users_bp.route('/edit_profile/<int:user_id>', methods=['GET', 'POST'])
+@login_required
+def edit_profile(user_id):
+    """
+    Edit user profile
+    """
+
+    form = UserForm()
+
+    # Department choices
+    department_choices = db.session.query(
+        Departments.id, Departments.name
+        ).order_by(Departments.name.asc()).all()
+
+    form.department.choices = [
+        (department.id, department.name) for department in department_choices
+    ]
+
+    # Get user
+    user = User.query.get_or_404(user_id)
+
+    if request.method == 'GET':
+        # Set form data to current user data
+        form.email.data = user.email
+        form.firstname.data = user.firstname
+        form.lastname.data = user.lastname
+        form.department.data = user.department_id
+        form.role.data = user.role
+
+    if form.validate_on_submit():
+        # Checks if email is being changed and is already registered
+        if user.email != form.email.data:
+            if User.query.filter_by(email=form.email.data).first():
+                flash('Email already registered.', 'danger')
+                return redirect(url_for('users.edit_profile', user_id=user.id))
+
+        # Update user
+        user.email = form.email.data
+        user.firstname = form.firstname.data
+        user.lastname = form.lastname.data
+        user.department_id = form.department.data
+        user.role = form.role.data
+        user.updated_date = datetime.utcnow()
+        user.updated_by = current_user.id
+        db.session.commit()
+        flash('User updated successfully.', 'success')
+        return redirect(url_for('users.profile', user_id=user.id))
+
+    return render_template('users/edit_profile.html',
+                           title='Edit User Profile',
                            form=form,
                            user=user)
