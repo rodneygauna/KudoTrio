@@ -47,7 +47,9 @@
         </h6>
         <p class="card-text">{{ sent.kudo_message }}</p>
         <p class="card-text">
-          <small class="text-muted">Submitted on {{ sent.created_date }}</small>
+          <small class="text-muted"
+            >Submitted on {{ sent.created_date.strftime('%B %d, %Y') }}</small
+          >
         </p>
       </div>
     </div>
@@ -72,7 +74,8 @@
         <p class="card-text">{{ received.kudo_message }}</p>
         <p class="card-text">
           <small class="text-muted"
-            >Received on {{ received.created_date }}</small
+            >Received on {{ received.created_date.strftime('%B %d, %Y')
+            }}</small
           >
         </p>
       </div>
