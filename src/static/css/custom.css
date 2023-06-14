@@ -1,10 +1,9 @@
 :root {
-    --clr-text: hsl(0, 0%, 100%);
-    --clr-primary: hsl(254, 37%, 11%);
-    --clr-secondary: hsl(252, 94%, 67%);
-    --clr-tertiary: hsl(252, 94%, 85%);
-    --clr-teal: hsl(190, 78%, 48%);
-    --clr-red: hsl(346, 89%, 48%);
+    --clr-text: #111312;
+    --clr-background: #fcfdfc;
+    --clr-primary: #2f3733;
+    --clr-secondary: #ffffff;
+    --clr-accent: #242926;
 }
 
 *,
@@ -15,4 +14,36 @@
 
 * {
   margin: 0;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--clr-text);
+  background-color: var(--clr-background);
+}
+
+.bg-custom-primary {
+  background-color: var(--clr-background);
+  color: var(--clr-text);
+}
+
+.btn {
+  border: none;
+}
+
+.btn-primary {
+  background-color: var(--clr-primary);
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background-color: var(--clr-primary);
+  color: var(--clr-secondary);
+}
+
+.card-header {
+  background-color: var(--clr-primary);
+  color: var(--clr-secondary);
 }
