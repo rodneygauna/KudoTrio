@@ -1,3 +1,24 @@
 {% extends "base.html" %} {% block content %}
-<h1>Test</h1>
-{% endblock content %}
+<div class="content">
+  <!-- Start Hero -->
+  <div class="row mt-4 mb-4">
+    <div class="col">
+      <h1>KudoTrio</h1>
+      <p>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis
+        consequatur atque illum voluptas minus, omnis quaerat voluptatibus esse
+        id voluptatem nemo a inventore dolorem itaque? Culpa quas reiciendis
+        exercitationem quia!
+      </p>
+    </div>
+    <div class="col">
+      <img
+        src="{{ url_for('static', filename='images/logo/kudo-logo-1024x1024.png') }}"
+        alt="KudoTrio"
+        class="img-fluid"
+      />
+    </div>
+  </div>
+  <!-- End Hero -->
+  {% endblock content %}
+</div>
