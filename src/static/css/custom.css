@@ -1,0 +1,18 @@
+:root {
+    --clr-text: hsl(0, 0%, 100%);
+    --clr-primary: hsl(254, 37%, 11%);
+    --clr-secondary: hsl(252, 94%, 67%);
+    --clr-tertiary: hsl(252, 94%, 85%);
+    --clr-teal: hsl(190, 78%, 48%);
+    --clr-red: hsl(346, 89%, 48%);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
