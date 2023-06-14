@@ -7,6 +7,18 @@
     <title>{{ title }}</title>
     <!-- Favicons -->
     <link
+      rel="icon"
+      type="image/png"
+      sizes="192x192"
+      href="{{ url_for('static', filename='favicons/android-chrome-192x192.png') }}"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="512x512"
+      href="{{ url_for('static', filename='favicons/andriod-chrome-512x512.png') }}"
+    />
+    <link
       rel="apple-touch-icon"
       sizes="180x180"
       href="{{ url_for('static', filename='favicons/apple-touch-icon.png') }}"
