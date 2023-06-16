@@ -128,6 +128,8 @@ def kudos_landing_page():
         .limit(10)
     )
 
+    # Dashboard - Kudos Count by Department
+
     return render_template(
         "kudos/kudos.html",
         title="Kudos",
