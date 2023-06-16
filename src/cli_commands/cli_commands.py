@@ -73,7 +73,7 @@ def seed_db():
     for i in range(1, 10+1):
         entry.append(
             User(
-                department_id=random.randint(1, 10),
+                department_id=random.randint(1, 6),
                 email=f"test{i}@healthtrio.com",
                 password_hash=generate_password_hash(
                     f"test{i}@healthtrio.com"),
@@ -85,10 +85,14 @@ def seed_db():
         )
 
     # Create 10 departments
-    for i in range(1, 10+1):
+    for i in range(1, 5+1):
         entry.append(
             Departments(
-                name=faker.job(),
+                name=random.choice(
+                    ["IT", "HR", "Finance", "Sales", "Marketing",
+                     "Operations", "Legal", "Customer Service", "Product",
+                     "Engineering"]
+                    ),
             )
         )
 
