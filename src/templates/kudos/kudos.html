@@ -10,7 +10,7 @@
 </div>
 <!-- Start Dashboards -->
 <div class="row mb-4">
-  <div class="col">
+  <div class="col-md-6">
     <div class="card">
       <div class="card-header">
         <h5 class="card-title">Kudos (Last 120 Days)</h5>
@@ -22,9 +22,21 @@
       </div>
     </div>
   </div>
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title">Department Kudos (Last 120 Days)</h5>
+      </div>
+      <div class="card-body">
+        <div class="chart-container">
+          <canvas id="kudosDepartments"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 <div class="row mb-4">
-  <div class="col">
+  <div class="col-md-6">
     <div class="card">
       <div class="card-header">
         <h5 class="card-title">Top 5 Submitters (Last 120 Days)</h5>
@@ -36,7 +48,7 @@
       </div>
     </div>
   </div>
-  <div class="col">
+  <div class="col-md-6">
     <div class="card">
       <div class="card-header">
         <h5 class="card-title">Top 5 Kudo Receivers (Last 120 Days)</h5>
@@ -83,9 +95,6 @@
             label: "Kudos",
             data: gKudosData,
             borderWidth: 2,
-            backgroundColor: "#242926",
-            borderColor: "#242926",
-            pointBackgroundColor: "#ffffff",
             },
         ],
       },
@@ -113,10 +122,6 @@
             {
             label: "Receivers",
             data: gKReceiverData,
-            borderWidth: 2,
-            backgroundColor: "#242926",
-            borderColor: "#242926",
-            pointBackgroundColor: "#ffffff",
             },
         ],
       },
@@ -131,7 +136,7 @@
       },
     });
 
-    /* Dashboard - Top 5 Creators */
+  /* Dashboard - Top 5 Creators */
   var gKCreatorLabels = {{ kudos_creator_labels | tojson }};
   var gKCreatorData = {{ kudos_creator_data | tojson }};
 
@@ -144,10 +149,6 @@
             {
             label: "Receivers",
             data: gKCreatorData,
-            borderWidth: 2,
-            backgroundColor: "#242926",
-            borderColor: "#242926",
-            pointBackgroundColor: "#ffffff",
             },
         ],
       },
@@ -159,6 +160,24 @@
             display: false,
           },
         },
+      },
+    });
+
+  /* Dashboard - Kudo Count by Department */
+  var gDepartmentLabels = {{ kudos_department_labels | tojson }};
+  var gDepartmentData = {{ kudos_department_data | tojson }};
+
+  var ctx2 = document.getElementById("kudosDepartments").getContext("2d");
+  var myChart2 = new Chart(ctx2, {
+      type: "pie",
+      data: {
+        labels: gDepartmentLabels,
+        datasets: [
+            {
+            label: "Departments",
+            data: gDepartmentData,
+            },
+        ],
       },
     });
 </script>

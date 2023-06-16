@@ -89,6 +89,29 @@ def kudos_landing_page():
         ]
     kudos_creator_data = [kudo.count for kudo in kudos_creator]
 
+    # Dashboard - Kudo Count by Department
+    kudos_department = (
+        db.session.query(
+            User.id.label("user_id"),
+            User.department_id.label("user_department_id"),
+            Departments.id.label("departments_id"),
+            Departments.name.label("department_name"),
+            Kudo.id.label("kudo_id"),
+            Kudo.receiving_user_id.label("kudo_receiving_user_id"),
+            db.func.count(Kudo.receiving_user_id).label("count")
+        )
+        .join(User, User.id == Kudo.receiving_user_id)
+        .join(Departments, Departments.id == User.department_id)
+        .filter(Kudo.created_date >= start_date)
+        .group_by(Departments.id, Departments.name)
+        .order_by(db.desc("count"))
+        .all()
+    )
+    kudos_department_labels = [
+        f"{kudo.department_name}" for kudo in kudos_department
+    ]
+    kudos_department_data = [kudo.count for kudo in kudos_department]
+
     # Get the last 10 created kudos
     CreatingUser = db.aliased(User, name="CreatingUser")
     CreatingUserDepartment = db.aliased(
@@ -128,8 +151,6 @@ def kudos_landing_page():
         .limit(10)
     )
 
-    # Dashboard - Kudos Count by Department
-
     return render_template(
         "kudos/kudos.html",
         title="Kudos",
@@ -140,6 +161,8 @@ def kudos_landing_page():
         kudos_receiver_data=kudos_receiver_data,
         kudos_creator_labels=kudos_creator_labels,
         kudos_creator_data=kudos_creator_data,
+        kudos_department_labels=kudos_department_labels,
+        kudos_department_data=kudos_department_data,
     )
 
 
