@@ -64,18 +64,36 @@
 <!-- End Dashboards -->
 <!-- Start Kudos -->
 <div class="row">
-  <strong>WILL UPDATE THIS DESIGN ASAP</strong>
-  {% for kudo in kudos %} {{ kudo.creating_user_firstname }} {{
-  kudo.creating_user_lastname }} ({{ kudo.creating_user_department_name }}) gave
-  {{ kudo.receiving_user_firstname }} {{ kudo.receiving_user_lastname }} ({{
-  kudo.receiving_user_department_name }}) a kudo on {{ kudo.created_date }}!
-  <br />
-  {{ kudo.kudo_message }} {% if kudo.meme_url %}
-  <img src="{{ kudo.meme_url }}" style="max-width: 50%" />
-  {% endif %}
-  <br />
-  <br />
-  {% endfor %}
+  {% for kudo in kudos %}
+  <div class="col">
+    <div class="card mb-3">
+      <div class="card-header">
+        Kudo to: {{ kudo.receiving_user_firstname }} {{
+        kudo.receiving_user_lastname }} ({{kudo.receiving_user_department_name
+        }})
+      </div>
+      <div class="card-body">
+        <p class="card-text">{{ kudo.kudo_message }}</p>
+        {% if kudo.meme_url %}
+        <br />
+        <img
+          class="card-img"
+          src="{{ kudo.meme_url }}"
+          style="max-width: 50%"
+        />
+        {% endif %}
+      </div>
+      <div class="card-footer text-body-secondary">
+        <p>
+          Submitted by {{ kudo.creating_user_firstname }} {{
+          kudo.creating_user_lastname }} ({{ kudo.creating_user_department_name
+          }})
+        </p>
+        <p class="text-muted">{{ kudo.created_date }}</p>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
 </div>
 <!-- End Kudos -->
 <!-- Start Graphs -->
