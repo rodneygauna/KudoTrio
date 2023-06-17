@@ -132,7 +132,7 @@ Using the following commands for testing and seeding the database with fake (usi
 
 ## Credits
 
-**Team High-Five Heroes**
+Meet **Team High-Five Heroes**!
 
 + Nicole Naegeli
 + Robert (Bob) Martin
