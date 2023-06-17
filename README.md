@@ -134,9 +134,9 @@ Using the following commands for testing and seeding the database with fake (usi
 
 Team High-Five Heroes
 
-+ Rodney Gauna
-+ Nicole 
++ Nicole Naegeli
 + Robert (Bob) Martin
++ Rodney Gauna
 
 ## Support
 
