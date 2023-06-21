@@ -4,7 +4,6 @@ Tests if the login page is working properly.
 
 # Imports
 import pytest
-from pages.navbar import Navbar
 from pages.login import LoginPage
 
 
