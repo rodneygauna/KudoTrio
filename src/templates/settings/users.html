@@ -33,7 +33,9 @@
           <td>{{ user.status }}</td>
           <td>
             <div class="btn-group" role="group" aria-label="actions">
-              <a href="#" class="btn btn-primary btn-sm"
+              <a
+                href="{{ url_for('users.profile', user_id=user.id)}}"
+                class="btn btn-primary btn-sm"
                 ><i class="fa fa-eye"></i> View</a
               >
               <form

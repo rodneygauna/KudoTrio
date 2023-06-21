@@ -166,7 +166,7 @@ def view_department_details(department_id):
     department_user_count = (
         db.session.query(User.id).filter_by(
             department_id=department_id
-            ).count()
+        ).count()
     )
 
     # Get user details for the department

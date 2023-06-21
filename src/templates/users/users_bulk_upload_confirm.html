@@ -1,0 +1,33 @@
+{% extends "base.html" %} {% block content %}
+<h1>Confirm Users</h1>
+<hr />
+<div class="alert alert-info" role="alert">
+  If the user's email is already registered, the user will be skipped and not
+  created.
+</div>
+<form method="POST">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Email</th>
+        <th>Department</th>
+        <th>Role</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for user in users %}
+      <tr>
+        <td>{{ user.first_name }}</td>
+        <td>{{ user.last_name }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.department }}</td>
+        <td>{{ user.role }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <button type="submit" class="btn btn-primary">Create All</button>
+</form>
+{% endblock content %}

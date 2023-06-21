@@ -1,0 +1,59 @@
+{% extends "base.html" %} {% block content %}
+<h1>Bulk Upload Users</h1>
+<hr />
+<!-- Start How-To Guide -->
+<div class="mt-4 mb-4">
+  <h2>How To Bulk Upload Users</h2>
+  <p>
+    To bulk upload users, you must first create a CSV file with the following
+    columns:
+  </p>
+  <ul>
+    <li>First Name</li>
+    <li>Last Name</li>
+    <li>Email</li>
+    <li>Department</li>
+    <li>Role</li>
+  </ul>
+  <br />
+  <p>Here is an example of what the CSV file would look like:</p>
+  <div class="border">
+    <code>
+      First Name,Last Name,Email,Department,Role<br />
+      John,Doe,john.doe@healthtrio.com,IT,user<br />
+      Jane,Doe,jane.doe@healthtrio.com,Engineering,admin<br />
+    </code>
+  </div>
+</div>
+<!-- End How-To Guide -->
+<!-- Start File Upload -->
+<div class="row mt-4 mb-4">
+  <h2>Upload CSV File</h2>
+  <p>
+    Once you have created your CSV file, you can upload it here to bulk upload
+    users.
+  </p>
+  <p>
+    <strong>Important!</strong> Ensure the first row of the CSV has "First
+    Name,Last Name,Email,Department,Role" and that there are no empty lines/end
+    row.
+  </p>
+  <form method="POST" enctype="multipart/form-data">
+    <div class="mb-3">
+      <label for="csvFile" class="form-label">Upload CSV File</label>
+      <input
+        class="form-control"
+        type="file"
+        id="csvFile"
+        name="csvFile"
+        accept=".csv"
+        required
+      />
+    </div>
+    <button type="submit" class="btn btn-primary">Upload</button>
+  </form>
+</div>
+<!-- End File Upload -->
+<!-- Start Display of Users from File -->
+<!-- End Display of Users from File -->
+{% endblock content %}

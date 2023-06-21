@@ -6,10 +6,13 @@ This file contains the views for the users blueprint.
 # Imports
 import random
 import string
+import csv
+import os
 from datetime import datetime
 from flask import render_template, url_for, flash, redirect, request, Blueprint
 from flask_login import login_user, current_user, logout_user, login_required
 from werkzeug.security import generate_password_hash
+from werkzeug.utils import secure_filename
 from flask_mail import Message
 from src import db, mail
 from src.users.forms import (
@@ -85,7 +88,7 @@ def user_registration():
     # Department choices
     department_choices = db.session.query(
         Departments.id, Departments.name
-        ).order_by(Departments.name.asc()).all()
+    ).order_by(Departments.name.asc()).all()
 
     form.department.choices = [
         (department.id, department.name) for department in department_choices
@@ -140,7 +143,7 @@ def add_user():
     # Department choices
     department_choices = db.session.query(
         Departments.id, Departments.name
-        ).order_by(Departments.name.asc()).all()
+    ).order_by(Departments.name.asc()).all()
 
     form.department.choices = [
         (department.id, department.name) for department in department_choices
@@ -423,7 +426,7 @@ def edit_profile(user_id):
     # Department choices
     department_choices = db.session.query(
         Departments.id, Departments.name
-        ).order_by(Departments.name.asc()).all()
+    ).order_by(Departments.name.asc()).all()
 
     form.department.choices = [
         (department.id, department.name) for department in department_choices
@@ -463,3 +466,142 @@ def edit_profile(user_id):
                            title='Edit User Profile',
                            form=form,
                            user=user)
+
+
+# Users - Bulk Upload Users - CSV Upload
+@users_bp.route('/bulk_upload_users', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def bulk_upload_users():
+    """
+    This pages allows admins to bulk upload users via CSV file.
+    The admin will be able to do the following:
+    1. Learn how to format the CSV
+    2. Select a CSV to upload
+
+    This function will return the file and redirect to the confirm page.
+    """
+
+    if request.method == "POST":
+        csv_file = request.files["csvFile"]
+        if csv_file:
+            filename = secure_filename(csv_file.filename)
+            csv_file.save(filename)
+            # Redirect to users bulk upload preview
+            return redirect(url_for('users.confirm_users', filename=filename))
+        else:
+            flash('No file uploaded.', 'danger')
+
+    return render_template(
+        "users/users_bulk_upload.html",
+        title="Users - Bulk Upload",
+    )
+
+
+# Users - Bulk Upload Users - CSV Upload Preview
+@users_bp.route('/bulk_upload_users/confirm/<filename>', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def confirm_users(filename):
+    """
+    This page will:
+    1. Verify the content of the CSV matches what's needed.
+    2. Bulk create the users
+    """
+
+    # Verify file extension
+    if not filename.endswith('.csv'):
+        flash('Invalid file format. Please upload a CSV file.', 'danger')
+        os.remove(filename)
+        return redirect(url_for('users.bulk_upload_users'))
+
+    # Parse CSV file and verify content
+    users = []
+    with open(filename, 'r') as file:
+        csv_reader = csv.reader(file)
+        next(csv_reader)  # Skip header row
+        for row in csv_reader:
+            if len(row) != 5:
+                flash(
+                    'Invalid CSV format. Please make sure all columns are provided.',
+                    'danger'
+                )
+                os.remove(filename)
+                return redirect(url_for('users.bulk_upload_users'))
+            users.append({
+                'first_name': row[0],
+                'last_name': row[1],
+                'email': row[2],
+                'department': row[3],
+                'role': row[4]
+            })
+
+    # Create the users
+    if request.method == 'POST':
+        for user_data in users:
+            user_data_email = user_data['email']
+
+            # Skip if user already exists
+            if User.query.filter_by(email=user_data_email).first():
+                continue
+
+            # Generate a random password
+            rand_password = "".join(
+                random.choices(string.ascii_lowercase + string.digits, k=12)
+            )
+            # Look up department id by the department name
+            department_name = user_data['department']
+            department = Departments.query.filter_by(
+                name=department_name).first()
+            if department:
+                department_id = department.id
+                # Create user using the existing user creation function
+                new_user = User(
+                    email=user_data['email'],
+                    password_hash=generate_password_hash(rand_password),
+                    firstname=user_data['first_name'],
+                    lastname=user_data['last_name'],
+                    department_id=department_id,
+                    role=user_data['role'],
+                    status="active",
+                    created_date=datetime.utcnow(),
+                    created_by=current_user.id,
+                )
+                db.session.add(new_user)
+
+                # Send email to new user
+                msg = Message(
+                    "KudoTrio - Forced Password Change",
+                    recipients=[new_user.email],
+                    sender="noreply@healthtrio.com",
+                )
+                msg.body = f"""
+                Hello {new_user.firstname},
+
+                You're password has been changed by an administrator.
+
+                Your temporary password is:
+                {rand_password}
+
+                Please login and change your password.
+                {url_for('users.login', _external=True)}
+                """
+                mail.send(msg)
+            else:
+                flash(
+                    f"Department '{department_name}' does not exist.",
+                    'danger'
+                )
+                os.remove(filename)
+                return redirect(url_for('users.bulk_upload_users'))
+
+        db.session.commit()
+        os.remove(filename)
+        flash('Users created successfully.', 'success')
+        return redirect(url_for('settings.settings_users'))
+
+    return render_template(
+        "users/users_bulk_upload_confirm.html",
+        title="Confirm Users",
+        users=users
+    )
