@@ -499,7 +499,8 @@ def bulk_upload_users():
 
 
 # Users - Bulk Upload Users - CSV Upload Preview
-@users_bp.route('/bulk_upload_users/confirm/<filename>', methods=['GET', 'POST'])
+@users_bp.route('/bulk_upload_users/confirm/<filename>',
+                methods=['GET', 'POST'])
 @login_required
 @admin_required
 def confirm_users(filename):
@@ -522,10 +523,11 @@ def confirm_users(filename):
         next(csv_reader)  # Skip header row
         for row in csv_reader:
             if len(row) != 5:
-                flash(
-                    'Invalid CSV format. Please make sure all columns are provided.',
-                    'danger'
-                )
+                flash("""
+Invalid CSV format. Please make sure all columns are provided.
+                    """,
+                      'danger'
+                      )
                 os.remove(filename)
                 return redirect(url_for('users.bulk_upload_users'))
             users.append({
