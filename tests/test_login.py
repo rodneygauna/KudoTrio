@@ -4,7 +4,7 @@ Tests if the login page is working properly.
 
 # Imports
 import pytest
-from pages.login import LoginPage
+from pages.page_login import LoginPage
 
 
 def test_login(browserChrome):
